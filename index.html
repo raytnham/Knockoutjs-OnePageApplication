@@ -1,0 +1,292 @@
+<head>
+
+    <link rel='stylesheet' href='css/bootstrap/bootstrap.min.css' />
+    <link rel='stylesheet' href='css/custom.css' />
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Product Index (One Page App - Knockoutjs)</h1>
+        </div>
+        <p>
+            <a href="javascript:void(0);" data-bind="" class="btn-create btn btn-primary">Add Product</a>
+        </p>
+        <table class="table table-responsive table-hover table-striped table-bordered">
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>Actions</th>
+            </tr>
+
+            <tbody data-bind="">
+                <tr>
+                    <td data-bind="text: ID"></td>
+                    <td data-bind="text: Name"></td>
+                    <td data-bind="text: Price"></td>
+
+                    <td>
+                        <a href="javascript:void(0);" class="btn-details btn btn-default">Details</a>
+                        <a href="javascript:void(0);" class="btn-edit btn btn-default">Edit</a>
+                        <a href="javascript:void(0);" class="btn-delete btn btn-default">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <!-- Modal for CRUD operations -->
+        <div id="my-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body" id="my-modal-content">
+                        <!-- Modal content goes here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="clsBtn">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End CRUD Modal -->
+
+    <!-- Import external JavaScript files -->
+    <script type='text/javascript' src='js/jquery-3.3.1.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap/bootstrap.min.js'></script>
+    <script type='text/javascript' src='js/knockoutjs/knockout-3.4.2.js'></script>
+    <script type='text/javascript' src='js/knockoutjs/knockout.mapping-2.0.js'></script>
+    <script type='text/javascript' src='js/product.js'></script>
+    <!-- Custom Javascript -->
+    <script type="text/javascript">
+        /*  
+            * 
+        */
+        var dataVm = ko.mapping.fromJS(data);
+        console.log(dataVm);
+        function PageViewModel(dataVm) {
+            var self = this;
+            for (var key in dataVm) {
+                self[key] = dataVm[key];
+            }
+            
+        }
+
+        var vm = new PageViewModel(data);
+        /*
+        ko.validation.rules['decimal'] = {
+            validator: function (val, validate) {
+                return (validate && /^-?\d*(?:\.\d*)?$/.test(val.toString()));
+            },
+            message: 'Must be a decimal value.'
+        };
+        function Product(data) {
+            var self = this;
+            self.ID = ko.observable();
+            self.Name = ko.observable().extend({
+                required: true
+            });
+            self.Price = ko.observable().extend({
+                required: true,
+                decimal: true
+            });
+
+            if (data) {
+                self.ID(data.ID);
+                self.Name(data.Name);
+                self.Price(data.Price);
+            }
+        }
+
+        function ProductViewModel() {
+            var self = this;
+            var modalOptions = { "backdrop": "static", keyboard: true };
+            self.products = ko.observableArray();
+            self.newProduct = new Product();
+            self.selectedProduct = new Product();
+
+            // Response to 'Create product' click.
+            self.createProduct = function () {
+                self.newProduct = new Product();
+                self.newProduct.errors = ko.validation.group(self.newProduct);
+                // Get the 'Create' view from server.
+                $.ajax({
+                    type: "GET",
+                    url: "/KOProducts/Create",
+                    datatype: "html",
+                    success: function (data) {
+                        // Insert the partial view HTML into the bootstrap modal.
+                        $('#my-modal-content').html(data);
+                        $('#my-modal').modal(modalOptions);
+                        // Apply binding to the newly inserted html section.
+                        ko.applyBindings(self, document.getElementById('create-product-form'));
+                        $('#my-modal').modal('show');
+                    }
+                });
+            };
+
+            // Response to 'Create' button in the Create view.
+            self.createConfirmed = function () {
+                if (self.newProduct.errors().length === 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/KOProducts/Create",
+                        data: $('#create-product-form').serialize(),
+                        datatype: "json",
+                        success: function (data) {
+                            if (data > 0) {
+                                // Get the new ID.
+                                self.newProduct.ID(data);
+                                // Add the new sale into 'sales' array.
+                                self.products.push(self.newProduct);
+                                $('#my-modal').modal('hide');
+                            } else {
+                                alert("An error occured, please try again!");
+                                $('#my-modal').modal('hide');
+                            }
+                        }
+                    });
+                } else {
+                    alert("Error! Please check your submission.");
+
+                }
+            };
+
+            // "Details" button's action.
+            self.viewProduct = function (data) {
+                self.selectedProduct = data;
+                // Get the 'Details' view from server.
+                $.ajax({
+                    type: "GET",
+                    url: "/KOProducts/Details",
+                    datatype: "html",
+                    success: function (data) {
+                        // Insert the partial view HTML into the bootstrap modal.
+                        $('#my-modal-content').html(data);
+                        $('#my-modal').modal(modalOptions);
+                        // Apply binding to the newly inserted html section.
+                        ko.applyBindings(self, document.getElementById('product-details'));
+                        $('#my-modal').modal('show');
+                    }
+                });
+            };
+
+            // "Edit" button's action.
+            self.editProduct = function (data) {
+                self.selectedProduct = data;
+                self.newProduct = new Product(ko.toJS(data));
+                self.newProduct.errors = ko.validation.group(self.newProduct);
+                // Get the "Edit" view from the server.
+                $.ajax({
+                    type: "GET",
+                    url: "/KOProducts/Edit",
+                    datatype: "html",
+                    success: function (data) {
+                        // Insert the partial view HTML into the bootstrap modal.
+                        $('#my-modal-content').html(data);
+                        $('#my-modal').modal(modalOptions);
+                        // Apply binding to the newly inserted html section.
+                        ko.applyBindings(self, document.getElementById('edit-product-form'));
+                        $('#my-modal').modal('show');
+                    }
+                });
+            };
+
+            // Edit confirmed action.
+            self.editConfirmed = function () {
+                if (self.newProduct.errors().length === 0) {
+                    // Save new data to the database.
+                    $.ajax({
+                        type: "POST",
+                        url: "/KOProducts/Edit",
+                        data: $('#edit-product-form').serialize(),
+                        success: function (data) {
+                            // Update viewModel array.
+                            self.products.replace(self.selectedProduct, self.newProduct);
+                            $('#my-modal').modal('hide');
+                        },
+                        error: function (e) {
+                            alert(e);
+                        }
+                    });
+                } else {
+                    alert("Error! Please check your submission.");
+
+                }
+            };
+
+            // "Delete" button's action.
+            self.deleteProduct = function (data) {
+                self.selectedProduct = data;
+                // Call the Delete action to get the partial view HTML document.
+                $.ajax({
+                    type: "GET",
+                    url: "/KOProducts/Delete",
+                    datatype: "html",
+                    success: function (data) {
+                        // Insert the partial view HTML into the bootstrap modal.
+                        $('#my-modal-content').html(data);
+                        $('#my-modal').modal(modalOptions);
+                        // Apply binding to the newly inserted html section.
+                        ko.applyBindings(self, document.getElementById('delete-product'));
+                        $('#my-modal').modal('show');
+                    }
+                });
+            };
+
+            // Delete confirmed action.
+            self.deleteConfirmed = function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/KOProducts/Delete",
+                    data: $('#delete-product-form').serialize(),
+                    datatype: "html",
+                    success: function (data) {
+                        // Remove the selected product from the observable array.
+                        self.products.remove(self.selectedProduct);
+                        $('#my-modal').modal('hide');
+                    },
+                    error: function (e) {
+                        if (e.status == 500) // Foreign key violation.
+                            alert("This product has associated Sale entries. Delete failed!");
+                        else
+                            alert("Error! Delete failed!");
+                    }
+                });
+            };
+        }
+
+
+        $("document").ready(function () {
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true,
+                parseInputAttributes: true,
+                errorClass: 'errorStyle',
+                messageTemplate: null
+            }, true);
+            var viewModel = new ProductViewModel();
+            // Get all data from the server and bind them to the view model.
+            $.get('/KOProducts/GetProducts', function (data) {
+                var product;
+                $.each(data, function (i, item) {
+                    product = new Product(item);
+                    viewModel.products.push(product);
+                })
+            });
+            ko.validation.registerExtenders();
+            ko.applyBindings(viewModel);
+        });*/
+
+    </script>
+
+</body>
