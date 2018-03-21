@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="Author" content="Ray Nham" />
     <meta name="Description" content="" />
-    
+
     <link rel='stylesheet' href='css/bootstrap/bootstrap.min.css' />
     <link rel='stylesheet' href='css/custom.css' />
 </head>
@@ -19,6 +19,8 @@
         <p>
             <button class="btn-create btn btn-primary" data-bind="click: addProduct">Add Product</button>
         </p>
+
+        <!-- Start: List of product items -->
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
@@ -29,7 +31,7 @@
                         Name
                     </th>
                     <th scope="col">
-                        Price
+                        Price ($AUD)
                     </th>
                     <th scope="col">
                         Company
@@ -52,11 +54,13 @@
                     </td>
                 </tr>
             </tbody>
-
         </table>
+        <!-- End: List of product items -->
+
+        <!-- Button to recover recent deleted task -->
         <a href="javascript:void(0);" class="pull-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
 
-        <!-- Modal for CRUD operations -->
+        <!-- Start: Modal for ADD operation -->
         <div id="add-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -67,20 +71,20 @@
                             <h4>Add Product</h4>
                             <hr />
                             <div class="form-group row">
-                                <label for="name-input" class="col-2 col-form-label">Name</label>
-                                <div class="col-10">
+                                <label for="name-input" class="col-4 col-form-label">Name</label>
+                                <div class="col-8">
                                     <input class="form-control" id="name-input" data-bind="value: productName">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price-input" class="col-2 col-form-label">Price</label>
-                                <div class="col-10">
+                                <label for="price-input" class="col-4 col-form-label">Price ($AUD)</label>
+                                <div class="col-8">
                                     <input class="form-control" id="price-input" data-bind="value: productPrice">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price-input" class="col-2 col-form-label">Comapny</label>
-                                <div class="col-10">
+                                <label for="price-input" class="col-4 col-form-label">Comapny</label>
+                                <div class="col-8">
                                     <input class="form-control" id="company-input" data-bind="value: companyName">
                                 </div>
                             </div>
@@ -93,8 +97,8 @@
                 </div>
             </div>
         </div>
-        <!-- End CRUD Modal -->
-        <!-- Modal for CRUD operations -->
+        <!-- End: Modal for ADD operation -->
+        <!-- Start: Modal for VIEW operation -->
         <div id="view-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -119,7 +123,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-4">Price</label>
+                                    <label class="col-4">Price ($AUD)</label>
                                     <div class="col-8">
                                         <p data-bind="text: productPrice" />
                                     </div>
@@ -145,8 +149,8 @@
                 </div>
             </div>
         </div>
-        <!-- End CRUD Modal -->
-        <!-- Modal for CRUD operations -->
+        <!-- End: Modal for VIEW operation -->
+        <!-- Start: Modal for EDIT operation -->
         <div id="edit-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -163,7 +167,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price-input" class="col-2 col-form-label">Price</label>
+                                <label for="price-input" class="col-2 col-form-label">Price ($AUD)</label>
                                 <div class="col-10">
                                     <input class="form-control" id="price-input" data-bind="value: productPrice">
                                 </div>
@@ -183,8 +187,8 @@
                 </div>
             </div>
         </div>
-        <!-- End CRUD Modal -->
-        <!-- Modal for CRUD operations -->
+        <!-- End: Modal for EDIT operation -->
+        <!-- Start Modal for DELETE operation -->
         <div id="delete-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -210,7 +214,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-4">Price</label>
+                                    <label class="col-4">Price ($AUD)</label>
                                     <div class="col-8">
                                         <p data-bind="text: productPrice" />
                                     </div>
@@ -238,10 +242,9 @@
                 </div>
             </div>
         </div>
-        <!-- End CRUD Modal -->
+        <!-- End: Modal for DELETE operation -->
     </div>
     <!-- Close div container -->
-
 
     <!-- Import external JavaScript files -->
     <script type='text/javascript' src='js/jquery-3.3.1.min.js'></script>
@@ -251,34 +254,44 @@
     <script type='text/javascript' src='js/product.js'></script>
     <!-- Custom Javascript -->
     <script type="text/javascript">
+        /* A function to get current date in dd/mm/yyyy format.
+         * params: none. return: string.
+         */
         function getCurrentDate() {
-            var fullDate = new Date();
+            var date = new Date();
             //convert month to 2 digits
-            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
-            var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+            var twoDigitMonth = (date.getMonth().length === 1) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var currentDate = date.getDate() + "/" + twoDigitMonth + "/" + date.getFullYear();
             return currentDate;
         }
+        /* the Model class for Product item.
+         * param: data (JSON or JS object format)
+         * return: an instance of Product model.
+         */
         function Product(data) {
             var self = this;
             self.ID = (data ? ko.observable(data.ID) : ko.observable());
             self.productName = (data ? ko.observable(data.productName) : ko.observable());
-            self.productPrice = (data ? ko.observable('$' + data.productPrice) : ko.observable());
-            self.companyName = (data ? ko.observable(data.companyName) : ko.observable());
+            self.productPrice = (data ? ko.observable(data.productPrice) : ko.observable());
+            self.companyName = (data ? ko.observable(data.companyName.toUpperCase()) : ko.observable());
             self.addedDate = (data ? ko.observable(data.addedDate) : ko.observable());
             self.isActive = (data ? ko.observable(data.isActive) : ko.observable());
         }
-
+        // The page ViewModel definition.
         function PageViewModel(data) {
             var self = this;
+            // An array to store a list of the product items.
             self.products = ko.observableArray();
+            // Inject existing data in the json file into the productList.
             for (var key in data) {
                 self.products.push(new Product(ko.toJS(data[key])));
             }
-
+            // Some placeholders to stores data as users interact with the page.
             self.selectedProduct = ko.observable();
             self.newProduct = ko.observable();
             self.selectedProductPointer = null;
 
+            // The function to add new product item into the list of product.
             self.addProduct = function () {
                 var product = new Product();
                 product.ID(self.products().length + 1);
@@ -287,11 +300,10 @@
                 self.newProduct(ko.toJS(product));
                 $('#add-product-modal').modal('show');
             }
-
             self.addConfirmed = function () {
                 self.products.push(new Product(ko.toJS(self.newProduct)));
             }
-
+            // The function to edit a product item.
             self.viewProduct = function (item) {
                 self.selectedProduct(item);
                 $('#view-product-modal').modal('show');
@@ -302,24 +314,22 @@
                 self.newProduct(new Product(ko.toJS(item)));
                 $('#edit-product-modal').modal('show');
             }
-
             self.editConfirmed = function (item) {
                 self.products.replace(self.selectedProductPointer,
                     new Product(ko.toJS(self.newProduct)));
             }
-
+            // The function to delete a product item.
             self.deleteProduct = function (item) {
                 self.selectedProduct(item);
                 self.selectedProductPointer = item;
                 $('#delete-product-modal').modal('show');
             }
-
             self.deleteConfirmed = function () {
                 var product = new Product(ko.toJS(self.selectedProduct));
                 product.isActive(false);
                 self.products.replace(self.selectedProductPointer, product);
             }
-
+            // The function to recover all deleted items.
             self.recoverDeletedItems = function () {
                 for (var i = 0; i < self.products().length; i++) {
                     if (!self.products()[i].isActive()) {
@@ -328,8 +338,12 @@
                 }
             }
         }
-        var vm = new PageViewModel(data);
-        ko.applyBindings(vm);
+
+        $('document').ready(function () {
+            // Attach an instance of PageViewModel into this page.
+            ko.applyBindings(new PageViewModel(data));
+        });
+
     </script>
 </body>
 
