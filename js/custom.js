@@ -1,6 +1,6 @@
 /* A function to get current date in dd/mm/yyyy format.
-         * params: none. return: string.
-         */
+ * params: none. return: string.
+ */
 function getCurrentDate() {
     var date = new Date();
     //convert month to 2 digits

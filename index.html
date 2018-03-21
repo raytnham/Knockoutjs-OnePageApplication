@@ -4,9 +4,10 @@
 <head>
     <title>One-page Application Example</title>
     <meta charset="utf-8" />
-    <meta name="Author" content="Ray Nham" />
-    <meta name="Description" content="" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Ray Nham (ray@raydeveloperonline.com)" />
+    <meta name="description" content="An example of one-page application using knockout.js" />
+    <!-- External css files -->
     <link rel='stylesheet' href='css/bootstrap/bootstrap.min.css' />
     <link rel='stylesheet' href='css/custom.css' />
 </head>
@@ -14,11 +15,13 @@
 <body>
     <div class="container">
         <div class="jumbotron">
-            <h1>Product Index (One Page App - Knockoutjs)</h1>
+            <h1>One-Page Application Demo (Knockout.js)</h1>
         </div>
         <p>
+            <!-- Button to add new product item -->
             <button class="btn-create btn btn-primary" data-bind="click: addProduct">Add Product</button>
         </p>
+
         <!-- Start: List of product items -->
         <table class="table table-bordered table-hover">
             <thead>
@@ -53,6 +56,7 @@
             </tbody>
         </table>
         <!-- End: List of product items -->
+
         <!-- Button to recover recent deleted task -->
         <a href="javascript:void(0);" class="float-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
 
@@ -94,6 +98,7 @@
             </div>
         </div>
         <!-- End: Modal for ADD operation -->
+
         <!-- Start: Modal for VIEW operation -->
         <div id="view-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -146,6 +151,7 @@
             </div>
         </div>
         <!-- End: Modal for VIEW operation -->
+
         <!-- Start: Modal for EDIT operation -->
         <div id="edit-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -184,6 +190,7 @@
             </div>
         </div>
         <!-- End: Modal for EDIT operation -->
+
         <!-- Start Modal for DELETE operation -->
         <div id="delete-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -240,16 +247,24 @@
         </div>
         <!-- End: Modal for DELETE operation -->
     </div>
-    <!-- Close div container -->
 
-    <!-- Import external JavaScript files -->
+    <!-- Close div container -->
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Author: Ray Nham (
+                <a href="http://raydeveloperonline.com" target="_blank">raydeveloperonline.com</a>)</span>
+        </div>
+    </footer>
+
+    <!-- External JavaScript files -->
     <script type='text/javascript' src='js/jquery-3.3.1.min.js'></script>
     <script type='text/javascript' src='js/bootstrap/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/knockoutjs/knockout-3.4.2.js'></script>
     <script type='text/javascript' src='js/knockoutjs/knockout.mapping-2.0.js'></script>
     <script type='text/javascript' src='js/product.js'></script>
+    <!-- load sampe json data (variable name: data) -->
     <script type='text/javascript' src='js/custom.js'></script>
-    <!-- Custom Javascript -->
+
     <script type="text/javascript">
         $('document').ready(function () {
             // Attach an instance of PageViewModel into this page.
