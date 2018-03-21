@@ -1,5 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
 <head>
     <title>One-page Application Example</title>
+    <meta charset="utf-8" />
+    <meta name="Author" content="Ray Nham" />
+    <meta name="Description" content="" />
+    
     <link rel='stylesheet' href='css/bootstrap/bootstrap.min.css' />
     <link rel='stylesheet' href='css/custom.css' />
 </head>
@@ -10,7 +17,7 @@
             <h1>Product Index (One Page App - Knockoutjs)</h1>
         </div>
         <p>
-            <a href="javascript:void(0);" data-bind="" class="btn-create btn btn-primary">Add Product</a>
+            <button class="btn-create btn btn-primary" data-bind="click: addProduct">Add Product</button>
         </p>
         <table class="table table-bordered table-hover">
             <thead>
@@ -49,7 +56,44 @@
         </table>
         <a href="javascript:void(0);" class="pull-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
 
-
+        <!-- Modal for CRUD operations -->
+        <div id="add-product-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <!-- Modal content goes here -->
+                        <div class="form-horizontal" data-bind="with: newProduct">
+                            <h4>Add Product</h4>
+                            <hr />
+                            <div class="form-group row">
+                                <label for="name-input" class="col-2 col-form-label">Name</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="name-input" data-bind="value: productName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="price-input" class="col-2 col-form-label">Price</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="price-input" data-bind="value: productPrice">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="price-input" class="col-2 col-form-label">Comapny</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="company-input" data-bind="value: companyName">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click: addConfirmed">Save</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End CRUD Modal -->
         <!-- Modal for CRUD operations -->
         <div id="view-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -63,33 +107,33 @@
                             <hr />
                             <dl class="dl-horizontal">
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">ID</label>
-                                    <div class="col-10">
-                                        <p class="form-control" data-bind="text: ID" />
+                                    <label class="col-4">ID</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: ID" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">Name</label>
-                                    <div class="col-10">
-                                        <p class="form-control" data-bind="text: productName" />
+                                    <label class="col-4">Name</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: productName" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">Price</label>
-                                    <div class="col-10">
-                                        <p class="form-control" data-bind="text: productPrice" />
+                                    <label class="col-4">Price</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: productPrice" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">Company</label>
-                                    <div class="col-10">
-                                        <p class="form-control" data-bind="text: companyName" />
+                                    <label class="col-4">Company</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: companyName" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">Added Date</label>
-                                    <div class="col-10">
-                                        <p class="form-control" data-bind="text: addedDate" />
+                                    <label class="col-4">Added Date</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: addedDate" />
                                     </div>
                                 </div>
                             </dl>
@@ -148,25 +192,47 @@
                     <div class="modal-body">
                         <!-- Modal content goes here -->
                         <h2>Delete</h2>
-
                         <h3>Are you sure you want to delete this?</h3>
                         <div id="delete-product" data-bind="with: selectedProduct">
                             <h4>Product</h4>
                             <hr />
                             <dl class="dl-horizontal">
-                                <dt>ID</dt>
-                                <dd data-bind="text: ID"></dd>
-                                <dt>Name</dt>
-                                <dd data-bind="text: productName"></dd>
-                                <dt>Price</dt>
-                                <dd data-bind="text: productPrice"></dd>
+                                <div class="form-group row">
+                                    <label class="col-4">ID</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: ID" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4">Name</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: productName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4">Price</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: productPrice" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4">Company</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: companyName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4">Added Date</label>
+                                    <div class="col-8">
+                                        <p data-bind="text: addedDate" />
+                                    </div>
+                                </div>
                             </dl>
                             <input hidden data-bind="value: ID" id="ID" name="ID" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="button" value="Delete" class="btn btn-default" 
-                            data-bind="click: deleteConfirmed" data-dismiss="modal"/>
+                        <input type="button" value="Delete" class="btn btn-default" data-bind="click: deleteConfirmed" data-dismiss="modal" />
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -185,11 +251,18 @@
     <script type='text/javascript' src='js/product.js'></script>
     <!-- Custom Javascript -->
     <script type="text/javascript">
+        function getCurrentDate() {
+            var fullDate = new Date();
+            //convert month to 2 digits
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+            var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+            return currentDate;
+        }
         function Product(data) {
             var self = this;
             self.ID = (data ? ko.observable(data.ID) : ko.observable());
             self.productName = (data ? ko.observable(data.productName) : ko.observable());
-            self.productPrice = (data ? ko.observable(data.productPrice) : ko.observable());
+            self.productPrice = (data ? ko.observable('$' + data.productPrice) : ko.observable());
             self.companyName = (data ? ko.observable(data.companyName) : ko.observable());
             self.addedDate = (data ? ko.observable(data.addedDate) : ko.observable());
             self.isActive = (data ? ko.observable(data.isActive) : ko.observable());
@@ -205,6 +278,19 @@
             self.selectedProduct = ko.observable();
             self.newProduct = ko.observable();
             self.selectedProductPointer = null;
+
+            self.addProduct = function () {
+                var product = new Product();
+                product.ID(self.products().length + 1);
+                product.addedDate(getCurrentDate());
+                product.isActive(true);
+                self.newProduct(ko.toJS(product));
+                $('#add-product-modal').modal('show');
+            }
+
+            self.addConfirmed = function () {
+                self.products.push(new Product(ko.toJS(self.newProduct)));
+            }
 
             self.viewProduct = function (item) {
                 self.selectedProduct(item);
@@ -235,8 +321,8 @@
             }
 
             self.recoverDeletedItems = function () {
-                for(var i = 0; i<self.products().length; i++){
-                    if(!self.products()[i].isActive()){
+                for (var i = 0; i < self.products().length; i++) {
+                    if (!self.products()[i].isActive()) {
                         self.products()[i].isActive(true);
                     }
                 }
@@ -246,3 +332,5 @@
         ko.applyBindings(vm);
     </script>
 </body>
+
+</html>
