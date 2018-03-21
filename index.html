@@ -19,7 +19,6 @@
         <p>
             <button class="btn-create btn btn-primary" data-bind="click: addProduct">Add Product</button>
         </p>
-
         <!-- Start: List of product items -->
         <table class="table table-bordered table-hover">
             <thead>
@@ -39,14 +38,12 @@
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-
             <tbody data-bind="foreach: products">
                 <tr data-bind="visible: isActive">
                     <td data-bind="text: ID" scope="row"></td>
                     <td data-bind="text: productName"></td>
                     <td data-bind="text: productPrice"></td>
                     <td data-bind="text: companyName"></td>
-
                     <td>
                         <a href="javascript:void(0);" class="btn-details btn btn-primary" data-bind="click: $parent.viewProduct">Details</a>
                         <a href="javascript:void(0);" class="btn-edit btn btn-success" data-bind="click: $parent.editProduct">Edit</a>
@@ -56,9 +53,8 @@
             </tbody>
         </table>
         <!-- End: List of product items -->
-
         <!-- Button to recover recent deleted task -->
-        <a href="javascript:void(0);" class="pull-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
+        <a href="javascript:void(0);" class="float-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
 
         <!-- Start: Modal for ADD operation -->
         <div id="add-product-modal" class="modal fade" role="dialog">
@@ -161,20 +157,20 @@
                             <h4>Edit Product</h4>
                             <hr />
                             <div class="form-group row">
-                                <label for="name-input" class="col-2 col-form-label">Name</label>
-                                <div class="col-10">
+                                <label for="name-input" class="col-4 col-form-label">Name</label>
+                                <div class="col-8">
                                     <input class="form-control" id="name-input" data-bind="value: productName">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price-input" class="col-2 col-form-label">Price ($AUD)</label>
-                                <div class="col-10">
+                                <label for="price-input" class="col-4 col-form-label">Price ($AUD)</label>
+                                <div class="col-8">
                                     <input class="form-control" id="price-input" data-bind="value: productPrice">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price-input" class="col-2 col-form-label">Comapny</label>
-                                <div class="col-10">
+                                <label for="price-input" class="col-4 col-form-label">Comapny</label>
+                                <div class="col-8">
                                     <input class="form-control" id="company-input" data-bind="value: companyName">
                                 </div>
                             </div>
@@ -252,98 +248,13 @@
     <script type='text/javascript' src='js/knockoutjs/knockout-3.4.2.js'></script>
     <script type='text/javascript' src='js/knockoutjs/knockout.mapping-2.0.js'></script>
     <script type='text/javascript' src='js/product.js'></script>
+    <script type='text/javascript' src='js/custom.js'></script>
     <!-- Custom Javascript -->
     <script type="text/javascript">
-        /* A function to get current date in dd/mm/yyyy format.
-         * params: none. return: string.
-         */
-        function getCurrentDate() {
-            var date = new Date();
-            //convert month to 2 digits
-            var twoDigitMonth = (date.getMonth().length === 1) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
-            var currentDate = date.getDate() + "/" + twoDigitMonth + "/" + date.getFullYear();
-            return currentDate;
-        }
-        /* the Model class for Product item.
-         * param: data (JSON or JS object format)
-         * return: an instance of Product model.
-         */
-        function Product(data) {
-            var self = this;
-            self.ID = (data ? ko.observable(data.ID) : ko.observable());
-            self.productName = (data ? ko.observable(data.productName) : ko.observable());
-            self.productPrice = (data ? ko.observable(data.productPrice) : ko.observable());
-            self.companyName = (data ? ko.observable(data.companyName.toUpperCase()) : ko.observable());
-            self.addedDate = (data ? ko.observable(data.addedDate) : ko.observable());
-            self.isActive = (data ? ko.observable(data.isActive) : ko.observable());
-        }
-        // The page ViewModel definition.
-        function PageViewModel(data) {
-            var self = this;
-            // An array to store a list of the product items.
-            self.products = ko.observableArray();
-            // Inject existing data in the json file into the productList.
-            for (var key in data) {
-                self.products.push(new Product(ko.toJS(data[key])));
-            }
-            // Some placeholders to stores data as users interact with the page.
-            self.selectedProduct = ko.observable();
-            self.newProduct = ko.observable();
-            self.selectedProductPointer = null;
-
-            // The function to add new product item into the list of product.
-            self.addProduct = function () {
-                var product = new Product();
-                product.ID(self.products().length + 1);
-                product.addedDate(getCurrentDate());
-                product.isActive(true);
-                self.newProduct(ko.toJS(product));
-                $('#add-product-modal').modal('show');
-            }
-            self.addConfirmed = function () {
-                self.products.push(new Product(ko.toJS(self.newProduct)));
-            }
-            // The function to edit a product item.
-            self.viewProduct = function (item) {
-                self.selectedProduct(item);
-                $('#view-product-modal').modal('show');
-            }
-
-            self.editProduct = function (item) {
-                self.selectedProductPointer = item;
-                self.newProduct(new Product(ko.toJS(item)));
-                $('#edit-product-modal').modal('show');
-            }
-            self.editConfirmed = function (item) {
-                self.products.replace(self.selectedProductPointer,
-                    new Product(ko.toJS(self.newProduct)));
-            }
-            // The function to delete a product item.
-            self.deleteProduct = function (item) {
-                self.selectedProduct(item);
-                self.selectedProductPointer = item;
-                $('#delete-product-modal').modal('show');
-            }
-            self.deleteConfirmed = function () {
-                var product = new Product(ko.toJS(self.selectedProduct));
-                product.isActive(false);
-                self.products.replace(self.selectedProductPointer, product);
-            }
-            // The function to recover all deleted items.
-            self.recoverDeletedItems = function () {
-                for (var i = 0; i < self.products().length; i++) {
-                    if (!self.products()[i].isActive()) {
-                        self.products()[i].isActive(true);
-                    }
-                }
-            }
-        }
-
         $('document').ready(function () {
             // Attach an instance of PageViewModel into this page.
             ko.applyBindings(new PageViewModel(data));
         });
-
     </script>
 </body>
 
