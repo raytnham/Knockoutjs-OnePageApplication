@@ -1,5 +1,5 @@
 <head>
-
+    <title>One-page Application Example</title>
     <link rel='stylesheet' href='css/bootstrap/bootstrap.min.css' />
     <link rel='stylesheet' href='css/custom.css' />
 </head>
@@ -12,52 +12,170 @@
         <p>
             <a href="javascript:void(0);" data-bind="" class="btn-create btn btn-primary">Add Product</a>
         </p>
-        <table class="table table-responsive table-hover table-striped table-bordered">
-            <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Price
-                </th>
-                <th>Actions</th>
-            </tr>
-
-            <tbody data-bind="">
+        <table class="table table-bordered table-hover">
+            <thead>
                 <tr>
-                    <td data-bind="text: ID"></td>
-                    <td data-bind="text: Name"></td>
-                    <td data-bind="text: Price"></td>
+                    <th scope="col">
+                        ID
+                    </th>
+                    <th scope="col">
+                        Name
+                    </th>
+                    <th scope="col">
+                        Price
+                    </th>
+                    <th scope="col">
+                        Company
+                    </th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody data-bind="foreach: products">
+                <tr data-bind="visible: isActive">
+                    <td data-bind="text: ID" scope="row"></td>
+                    <td data-bind="text: productName"></td>
+                    <td data-bind="text: productPrice"></td>
+                    <td data-bind="text: companyName"></td>
 
                     <td>
-                        <a href="javascript:void(0);" class="btn-details btn btn-default">Details</a>
-                        <a href="javascript:void(0);" class="btn-edit btn btn-default">Edit</a>
-                        <a href="javascript:void(0);" class="btn-delete btn btn-default">Delete</a>
+                        <a href="javascript:void(0);" class="btn-details btn btn-primary" data-bind="click: $parent.viewProduct">Details</a>
+                        <a href="javascript:void(0);" class="btn-edit btn btn-success" data-bind="click: $parent.editProduct">Edit</a>
+                        <a href="javascript:void(0);" class="btn-delete btn btn-danger" data-bind="click: $parent.deleteProduct">Delete</a>
                     </td>
                 </tr>
             </tbody>
 
         </table>
+        <a href="javascript:void(0);" class="pull-right" data-bind="click: recoverDeletedItems">Recover deleted items</a>
+
 
         <!-- Modal for CRUD operations -->
-        <div id="my-modal" class="modal fade" role="dialog">
+        <div id="view-product-modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-body" id="my-modal-content">
+                    <div class="modal-body">
                         <!-- Modal content goes here -->
+                        <h2>Details</h2>
+                        <div class="form-horizontal" data-bind="with: selectedProduct">
+                            <h4>Product</h4>
+                            <hr />
+                            <dl class="dl-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">ID</label>
+                                    <div class="col-10">
+                                        <p class="form-control" data-bind="text: ID" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Name</label>
+                                    <div class="col-10">
+                                        <p class="form-control" data-bind="text: productName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Price</label>
+                                    <div class="col-10">
+                                        <p class="form-control" data-bind="text: productPrice" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Company</label>
+                                    <div class="col-10">
+                                        <p class="form-control" data-bind="text: companyName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Added Date</label>
+                                    <div class="col-10">
+                                        <p class="form-control" data-bind="text: addedDate" />
+                                    </div>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" id="clsBtn">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- End CRUD Modal -->
+        <!-- Modal for CRUD operations -->
+        <div id="edit-product-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <!-- Modal content goes here -->
+                        <div class="form-horizontal" data-bind="with: newProduct">
+                            <h4>Edit Product</h4>
+                            <hr />
+                            <div class="form-group row">
+                                <label for="name-input" class="col-2 col-form-label">Name</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="name-input" data-bind="value: productName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="price-input" class="col-2 col-form-label">Price</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="price-input" data-bind="value: productPrice">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="price-input" class="col-2 col-form-label">Comapny</label>
+                                <div class="col-10">
+                                    <input class="form-control" id="company-input" data-bind="value: companyName">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click: editConfirmed">Save</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End CRUD Modal -->
+        <!-- Modal for CRUD operations -->
+        <div id="delete-product-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <!-- Modal content goes here -->
+                        <h2>Delete</h2>
+
+                        <h3>Are you sure you want to delete this?</h3>
+                        <div id="delete-product" data-bind="with: selectedProduct">
+                            <h4>Product</h4>
+                            <hr />
+                            <dl class="dl-horizontal">
+                                <dt>ID</dt>
+                                <dd data-bind="text: ID"></dd>
+                                <dt>Name</dt>
+                                <dd data-bind="text: productName"></dd>
+                                <dt>Price</dt>
+                                <dd data-bind="text: productPrice"></dd>
+                            </dl>
+                            <input hidden data-bind="value: ID" id="ID" name="ID" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" value="Delete" class="btn btn-default" 
+                            data-bind="click: deleteConfirmed" data-dismiss="modal"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End CRUD Modal -->
     </div>
-    <!-- End CRUD Modal -->
+    <!-- Close div container -->
+
 
     <!-- Import external JavaScript files -->
     <script type='text/javascript' src='js/jquery-3.3.1.min.js'></script>
@@ -67,226 +185,64 @@
     <script type='text/javascript' src='js/product.js'></script>
     <!-- Custom Javascript -->
     <script type="text/javascript">
-        /*  
-            * 
-        */
-        var dataVm = ko.mapping.fromJS(data);
-        console.log(dataVm);
-        function PageViewModel(dataVm) {
-            var self = this;
-            for (var key in dataVm) {
-                self[key] = dataVm[key];
-            }
-            
-        }
-
-        var vm = new PageViewModel(data);
-        /*
-        ko.validation.rules['decimal'] = {
-            validator: function (val, validate) {
-                return (validate && /^-?\d*(?:\.\d*)?$/.test(val.toString()));
-            },
-            message: 'Must be a decimal value.'
-        };
         function Product(data) {
             var self = this;
-            self.ID = ko.observable();
-            self.Name = ko.observable().extend({
-                required: true
-            });
-            self.Price = ko.observable().extend({
-                required: true,
-                decimal: true
-            });
+            self.ID = (data ? ko.observable(data.ID) : ko.observable());
+            self.productName = (data ? ko.observable(data.productName) : ko.observable());
+            self.productPrice = (data ? ko.observable(data.productPrice) : ko.observable());
+            self.companyName = (data ? ko.observable(data.companyName) : ko.observable());
+            self.addedDate = (data ? ko.observable(data.addedDate) : ko.observable());
+            self.isActive = (data ? ko.observable(data.isActive) : ko.observable());
+        }
 
-            if (data) {
-                self.ID(data.ID);
-                self.Name(data.Name);
-                self.Price(data.Price);
+        function PageViewModel(data) {
+            var self = this;
+            self.products = ko.observableArray();
+            for (var key in data) {
+                self.products.push(new Product(ko.toJS(data[key])));
+            }
+
+            self.selectedProduct = ko.observable();
+            self.newProduct = ko.observable();
+            self.selectedProductPointer = null;
+
+            self.viewProduct = function (item) {
+                self.selectedProduct(item);
+                $('#view-product-modal').modal('show');
+            }
+
+            self.editProduct = function (item) {
+                self.selectedProductPointer = item;
+                self.newProduct(new Product(ko.toJS(item)));
+                $('#edit-product-modal').modal('show');
+            }
+
+            self.editConfirmed = function (item) {
+                self.products.replace(self.selectedProductPointer,
+                    new Product(ko.toJS(self.newProduct)));
+            }
+
+            self.deleteProduct = function (item) {
+                self.selectedProduct(item);
+                self.selectedProductPointer = item;
+                $('#delete-product-modal').modal('show');
+            }
+
+            self.deleteConfirmed = function () {
+                var product = new Product(ko.toJS(self.selectedProduct));
+                product.isActive(false);
+                self.products.replace(self.selectedProductPointer, product);
+            }
+
+            self.recoverDeletedItems = function () {
+                for(var i = 0; i<self.products().length; i++){
+                    if(!self.products()[i].isActive()){
+                        self.products()[i].isActive(true);
+                    }
+                }
             }
         }
-
-        function ProductViewModel() {
-            var self = this;
-            var modalOptions = { "backdrop": "static", keyboard: true };
-            self.products = ko.observableArray();
-            self.newProduct = new Product();
-            self.selectedProduct = new Product();
-
-            // Response to 'Create product' click.
-            self.createProduct = function () {
-                self.newProduct = new Product();
-                self.newProduct.errors = ko.validation.group(self.newProduct);
-                // Get the 'Create' view from server.
-                $.ajax({
-                    type: "GET",
-                    url: "/KOProducts/Create",
-                    datatype: "html",
-                    success: function (data) {
-                        // Insert the partial view HTML into the bootstrap modal.
-                        $('#my-modal-content').html(data);
-                        $('#my-modal').modal(modalOptions);
-                        // Apply binding to the newly inserted html section.
-                        ko.applyBindings(self, document.getElementById('create-product-form'));
-                        $('#my-modal').modal('show');
-                    }
-                });
-            };
-
-            // Response to 'Create' button in the Create view.
-            self.createConfirmed = function () {
-                if (self.newProduct.errors().length === 0) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/KOProducts/Create",
-                        data: $('#create-product-form').serialize(),
-                        datatype: "json",
-                        success: function (data) {
-                            if (data > 0) {
-                                // Get the new ID.
-                                self.newProduct.ID(data);
-                                // Add the new sale into 'sales' array.
-                                self.products.push(self.newProduct);
-                                $('#my-modal').modal('hide');
-                            } else {
-                                alert("An error occured, please try again!");
-                                $('#my-modal').modal('hide');
-                            }
-                        }
-                    });
-                } else {
-                    alert("Error! Please check your submission.");
-
-                }
-            };
-
-            // "Details" button's action.
-            self.viewProduct = function (data) {
-                self.selectedProduct = data;
-                // Get the 'Details' view from server.
-                $.ajax({
-                    type: "GET",
-                    url: "/KOProducts/Details",
-                    datatype: "html",
-                    success: function (data) {
-                        // Insert the partial view HTML into the bootstrap modal.
-                        $('#my-modal-content').html(data);
-                        $('#my-modal').modal(modalOptions);
-                        // Apply binding to the newly inserted html section.
-                        ko.applyBindings(self, document.getElementById('product-details'));
-                        $('#my-modal').modal('show');
-                    }
-                });
-            };
-
-            // "Edit" button's action.
-            self.editProduct = function (data) {
-                self.selectedProduct = data;
-                self.newProduct = new Product(ko.toJS(data));
-                self.newProduct.errors = ko.validation.group(self.newProduct);
-                // Get the "Edit" view from the server.
-                $.ajax({
-                    type: "GET",
-                    url: "/KOProducts/Edit",
-                    datatype: "html",
-                    success: function (data) {
-                        // Insert the partial view HTML into the bootstrap modal.
-                        $('#my-modal-content').html(data);
-                        $('#my-modal').modal(modalOptions);
-                        // Apply binding to the newly inserted html section.
-                        ko.applyBindings(self, document.getElementById('edit-product-form'));
-                        $('#my-modal').modal('show');
-                    }
-                });
-            };
-
-            // Edit confirmed action.
-            self.editConfirmed = function () {
-                if (self.newProduct.errors().length === 0) {
-                    // Save new data to the database.
-                    $.ajax({
-                        type: "POST",
-                        url: "/KOProducts/Edit",
-                        data: $('#edit-product-form').serialize(),
-                        success: function (data) {
-                            // Update viewModel array.
-                            self.products.replace(self.selectedProduct, self.newProduct);
-                            $('#my-modal').modal('hide');
-                        },
-                        error: function (e) {
-                            alert(e);
-                        }
-                    });
-                } else {
-                    alert("Error! Please check your submission.");
-
-                }
-            };
-
-            // "Delete" button's action.
-            self.deleteProduct = function (data) {
-                self.selectedProduct = data;
-                // Call the Delete action to get the partial view HTML document.
-                $.ajax({
-                    type: "GET",
-                    url: "/KOProducts/Delete",
-                    datatype: "html",
-                    success: function (data) {
-                        // Insert the partial view HTML into the bootstrap modal.
-                        $('#my-modal-content').html(data);
-                        $('#my-modal').modal(modalOptions);
-                        // Apply binding to the newly inserted html section.
-                        ko.applyBindings(self, document.getElementById('delete-product'));
-                        $('#my-modal').modal('show');
-                    }
-                });
-            };
-
-            // Delete confirmed action.
-            self.deleteConfirmed = function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/KOProducts/Delete",
-                    data: $('#delete-product-form').serialize(),
-                    datatype: "html",
-                    success: function (data) {
-                        // Remove the selected product from the observable array.
-                        self.products.remove(self.selectedProduct);
-                        $('#my-modal').modal('hide');
-                    },
-                    error: function (e) {
-                        if (e.status == 500) // Foreign key violation.
-                            alert("This product has associated Sale entries. Delete failed!");
-                        else
-                            alert("Error! Delete failed!");
-                    }
-                });
-            };
-        }
-
-
-        $("document").ready(function () {
-            ko.validation.init({
-                registerExtenders: true,
-                messagesOnModified: true,
-                insertMessages: true,
-                parseInputAttributes: true,
-                errorClass: 'errorStyle',
-                messageTemplate: null
-            }, true);
-            var viewModel = new ProductViewModel();
-            // Get all data from the server and bind them to the view model.
-            $.get('/KOProducts/GetProducts', function (data) {
-                var product;
-                $.each(data, function (i, item) {
-                    product = new Product(item);
-                    viewModel.products.push(product);
-                })
-            });
-            ko.validation.registerExtenders();
-            ko.applyBindings(viewModel);
-        });*/
-
+        var vm = new PageViewModel(data);
+        ko.applyBindings(vm);
     </script>
-
 </body>
