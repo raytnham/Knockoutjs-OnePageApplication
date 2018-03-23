@@ -1,6 +1,8 @@
-# KnockoutJS-OnePageApplication
 <em><strong>Demo:</strong></em> <a href="http://onepageknockout.raydeveloperonline.com/" rel="noopener" target="_blank">Knockout.js - One-Page Application Demo</a>
 <em><strong>Source Code:</strong></em> <a href="https://github.com/raytnham/KnockoutJS-OnePageApplication" rel="noopener" target="_blank">GitHub - Knockout.js - One-Page Application Demo</a>
+
+This article will show step-by-step on how to implement a simple Sing-page CRUD (Create-Read-Update-Delete). In this web page, after the page is loaded, all user interactions are handled in JavaScript by using Knockout.js library.
+<!--more-->
 
 <h2>REQUIREMENTS</h2>
 This lists the libraries and dependencies that are needed to build this page:
@@ -389,5 +391,4 @@ The snippet below includes all the codes required for a ViewModel to function. N
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
 
