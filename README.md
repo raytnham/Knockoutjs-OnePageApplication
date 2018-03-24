@@ -1,6 +1,5 @@
 # KnockoutJS-OnePageApplication
-<em><strong>Demo:</strong></em> <a href="http://onepageknockout.raydeveloperonline.com/" rel="noopener" target="_blank">Knockout.js - One-Page Application Demo</a>
-<em><strong>Source Code:</strong></em> <a href="https://github.com/raytnham/KnockoutJS-OnePageApplication" rel="noopener" target="_blank">GitHub - Knockout.js - One-Page Application Demo</a>
+<em><strong>Demo:</strong></em> <a href="http://onepageknockout.raydeveloperonline.com/" rel="noopener" target="_blank">Knockout.js - One-Page Application Demo</a><br/>
 In this application, after the page is loaded, all user interactions are handled in JavaScript by using Knockout.js library.
 <!--more-->
 
